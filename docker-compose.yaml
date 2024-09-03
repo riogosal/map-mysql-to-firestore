@@ -1,0 +1,27 @@
+services:
+    # add your go script here
+    #script:
+
+    mariadb:
+      image: mariadb:10.7
+      container_name: db
+      restart: always
+      ports:
+        - 3306
+      volumes:
+        - ./configs/mysql/conf.d:/etc/mysql/conf.d
+        - ./volumes/database:/var/lib/mysql
+        - ./volumes/sql:/sql
+      networks:
+        - network1
+      env_file:
+        - .env
+      healthcheck:
+        test: [ 'CMD', 'mysqladmin', 'ping', '-u', 'root', '-p${MARIADB_ROOT_PASSWORD}' ]
+        interval: 5s
+        timeout: 10s
+        retries: 5
+
+networks:
+  network1:
+    driver: bridge
